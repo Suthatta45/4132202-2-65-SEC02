@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Create File Example</title>
+  </head>
+  <body>
+    <form>
+      <label for="filename">Filename:</label>
+      <input type="text" id="filename" name="filename"><br>
+      <label for="filecontent">File Content:</label>
+      <textarea id="filecontent" name="filecontent"></textarea><br>
+      <button type="button" onclick="createFile()">Create File</button>
+    </form>
+    
+    <script>
+      function createFile() {
+        // Get the filename and file content from the form
+        const filename = document.getElementById('filename').value;
+        const filecontent = document.getElementById('filecontent').value;
+        
+        // Use SSH to create the file on the remote computer
+        const ssh = require('ssh2');
+        const conn = new ssh();
+        conn.on('ready', function() {
+          console.log('SSH connection established');
+          conn.exec('echo "' + filecontent + '" > ' + filename, function(err, stream) {
+            if (err) throw err;
+            stream.on('close', function(code, signal) {
+              console.log('SSH command exited with code ' + code);
+              conn.end();
+            }).on('data', function(data) {
+              console.log('STDOUT: ' + data);
+            }).stderr.on('data', function(data) {
+              console.log('STDERR: ' + data);
+            });
+          });
+        }).connect({
+          host: 'remotehost.example.com',
+          port: 22,
+          username: 'username',
+          password: 'password'
+        });
+      }
+    </script>
+  </body>
+</html>

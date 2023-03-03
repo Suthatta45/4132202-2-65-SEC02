@@ -1,7 +1,9 @@
 version: '3'
 services:
   ssh:
-    container_name: project
+    container_name: ssh2222
     image: rastasheep/ubuntu-sshd
     ports:
-      -2222/22
+      - 2222:22
+    volumes:
+      - ./GG:/home

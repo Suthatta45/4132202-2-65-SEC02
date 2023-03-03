@@ -1,0 +1,9 @@
+version: '3'
+services:
+  ssh:
+    container_name: ssh22
+    image: rastasheep/ubuntu-sshd
+    ports:
+      - 2222:22
+    volumes:
+      - ./telnet:/home
